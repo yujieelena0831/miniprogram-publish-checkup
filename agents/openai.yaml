@@ -1,4 +1,4 @@
 interface:
   display_name: "小程序发布合规校验器"
   short_description: "提交项目包，判断能否提审上线并获得逐项修改方案"
-  default_prompt: "使用 $miniprogram-publish-checkup 检查我提供的微信小程序文件夹或 ZIP，判断能否提审上线；如不能，请说明原因、修改位置、具体做法和复验方法。"
+  default_prompt: "检查我提供的微信小程序文件夹或 ZIP，判断能否提审上线；如不能，请说明原因、修改位置、具体做法和复验方法。"

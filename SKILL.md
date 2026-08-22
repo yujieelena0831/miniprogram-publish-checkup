@@ -1,9 +1,18 @@
 ---
 name: miniprogram-publish-checkup
-description: Determine whether a WeChat Mini Program project folder or ZIP is ready for submission or release, explain every blocking or uncertain reason, and give exact remediation. Use when a user provides only a Mini Program package and asks whether it can launch, pass review, comply, preview, upload, or publish; also use for project completeness, pages, components, routing, tabBar, package size, secrets, privacy, backend or CloudBase, filing, service categories, qualifications, real-device readiness, and release checkups.
+description: Portable Agent Skill that determines whether a WeChat Mini Program project folder or ZIP is ready for submission or release, explains every blocking or uncertain reason, and gives exact remediation. Use when a user provides only a Mini Program package and asks whether it can launch, pass review, comply, preview, upload, or publish; also use for project completeness, pages, components, routing, tabBar, package size, secrets, privacy, backend or CloudBase, filing, service categories, qualifications, real-device readiness, and release checkups.
 ---
 
 # Mini Program Publish Checkup
+
+## Host Compatibility
+
+- Follow the common Agent Skills directory model: this `SKILL.md` is the entry point; `scripts/` and `references/` are relative to the directory containing it.
+- Resolve the skill root from the loaded `SKILL.md` location. Never assume a Codex, Claude Code, WorkBuddy, home-directory, plugin, or project installation path.
+- Use the host's available filesystem and command-execution tools. Do not require host-specific invocation syntax, tool names, metadata, or environment variables for the core workflow.
+- Run the bundled Python scripts when Python 3 command execution is available. They use only the Python standard library.
+- If the host cannot execute scripts, perform the documented checks through available file tools, mark every skipped deterministic check as `UNKNOWN`, and disclose the reduced confidence. Never turn a host limitation into `PASS`.
+- Treat `agents/openai.yaml` as optional host metadata. The core skill must work when a host ignores or does not load it.
 
 ## Default User Experience
 
@@ -52,19 +61,19 @@ Read `references/package-only-decision.md` for the decision model, complete insp
 Run the package-first inspection for either a ZIP or directory:
 
 ```bash
-python3 ~/.codex/skills/miniprogram-publish-checkup/scripts/inspect_package.py /path/to/project-or.zip
+python3 /absolute/path/to/miniprogram-publish-checkup/scripts/inspect_package.py /path/to/project-or.zip
 ```
 
 Run the structural preflight:
 
 ```bash
-python3 ~/.codex/skills/miniprogram-publish-checkup/scripts/audit_miniprogram.py /path/to/project
+python3 /absolute/path/to/miniprogram-publish-checkup/scripts/audit_miniprogram.py /path/to/project
 ```
 
 Run the package estimate:
 
 ```bash
-python3 ~/.codex/skills/miniprogram-publish-checkup/scripts/estimate_package_size.py /path/to/project
+python3 /absolute/path/to/miniprogram-publish-checkup/scripts/estimate_package_size.py /path/to/project
 ```
 
 Treat script outputs as package evidence, not proof of platform approval. WeChat Developer Tools remains authoritative for the compiled upload result, dependency analysis, preview, and real-device behavior.

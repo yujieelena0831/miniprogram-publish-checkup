@@ -1,6 +1,6 @@
 # 小程序发布合规校验器
 
-`miniprogram-publish-checkup` 是一个面向微信小程序发布阶段的 Codex Skill。
+`miniprogram-publish-checkup` 是一个面向微信小程序发布阶段的通用 Agent Skill。
 
 用户只需要提供微信小程序项目文件夹或 ZIP，它会尽可能自动判断这个包体是否具备提审、预览或上线条件；如果不能，会说明不能上线的原因、问题位置、修改方法和复验方式。
 
@@ -21,19 +21,40 @@
 
 ## 使用方式
 
-### 安装为 Codex Skill
+### 安装到兼容 Agent Skills 的客户端
+
+同一个仓库可以安装到 Codex、Claude Code、WorkBuddy，以及其他支持 `SKILL.md` 的 Agent。选择自己客户端对应的 Skill 目录即可。
+
+| Agent | 个人 Skill 目录 |
+| --- | --- |
+| Codex | `$HOME/.agents/skills/` |
+| Claude Code | `~/.claude/skills/` |
+| WorkBuddy | `~/.workbuddy/skills/`，也可以在界面中上传文件夹或 ZIP |
+
+以 Codex 为例：
 
 ```bash
 git clone https://github.com/yujieelena0831/miniprogram-publish-checkup.git \
-  ~/.codex/skills/miniprogram-publish-checkup
+  "$HOME/.agents/skills/miniprogram-publish-checkup"
 ```
 
-安装后，在 Codex 中提供小程序文件夹或 ZIP，并发送：
+Claude Code：
+
+```bash
+git clone https://github.com/yujieelena0831/miniprogram-publish-checkup.git \
+  ~/.claude/skills/miniprogram-publish-checkup
+```
+
+WorkBuddy 可以把仓库克隆到其个人 Skill 目录，或者直接上传从仓库下载的文件夹/ZIP。
+
+安装后，在任意兼容 Agent 中提供小程序文件夹或 ZIP，并用自然语言发送：
 
 ```text
-请使用 $miniprogram-publish-checkup 检查这个微信小程序是否可以提审上线。
+请检查这个微信小程序是否可以提审上线。
 如果不能，请告诉我原因、修改位置、具体做法和复验方法。
 ```
+
+不要求用户记住 `$skill-name`、`/skill-name` 或其他平台调用语法。只要 Agent 支持根据 `description` 自动匹配 Skill，就能从自然语言请求触发；也可以按客户端提供的方式显式选择该 Skill。
 
 用户不需要先填写检查表。Skill 会先检查包体，再根据检测到的技术架构和业务能力生成适用的检查项。
 
@@ -99,6 +120,20 @@ Skill 使用三种顶层结论：
 因此，Skill 不会把“包里看不到”当成“已经通过”。这些事项会被标记为 `UNKNOWN`，并转换成尽可能少且明确的后台确认动作。
 
 静态检查也不能替代微信开发者工具的最终编译结果、体验版真机测试、平台审核或法律意见。平台限制和提交规则可能变化，执行时应以当前官方规则为准。
+
+## Agent 兼容性
+
+核心 Skill 不依赖 Codex、Claude Code 或 WorkBuddy 的专属命令。它通过 `SKILL.md` 提供流程，通过相对路径读取 `references/` 和 `scripts/`。
+
+要完整执行自动检查，宿主 Agent 需要：
+
+- 能读取用户提供的项目文件夹或 ZIP；
+- 能执行 Python 3；
+- 允许 Skill 调用本地脚本。
+
+三个脚本只使用 Python 标准库。如果某个 Agent 不能执行本地命令，仍可以按照 `SKILL.md` 和参考资料人工检查，但必须把未执行的自动检查标记为 `UNKNOWN`，不能当成通过。
+
+`agents/openai.yaml` 只是可选的 Codex 界面元数据。其他 Agent 可以忽略它，不影响核心检查流程。
 
 ## 项目结构
 
