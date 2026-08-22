@@ -34,6 +34,16 @@ Read `references/package-only-decision.md` for the decision model, complete insp
 - Do not upload, submit for review, publish, change CloudBase resources, or modify production configuration without explicit user authorization.
 - Preserve existing project conventions while remediating blockers. Do not impose CloudBase, a custom tab bar, or a specific visual style on every project.
 
+## Permissions, Data Handling, And Safety
+
+- Read only the Mini Program directory or ZIP that the user places in scope, plus the minimum project files needed to classify and verify the package. Treat source code, configuration, logs, screenshots, and generated reports as potentially confidential.
+- Run only the bundled `scripts/*.py` checks by default. They use the Python standard library, do not install dependencies, and do not need user credentials.
+- Use network access only when a release fact is volatile or an in-scope production dependency needs a read-only availability check. Prefer current official WeChat, Tencent, or government sources; disclose the checked endpoint and never send project source, user content, credentials, or package files to a third party merely to perform the check.
+- Do not request, print, persist, or transmit API keys, AppSecret values, upload keys, session cookies, passwords, private keys, or other credentials. If a supplied package contains possible credentials, report only the file location and credential type, redact the value, and recommend removal and rotation.
+- Default to read-only inspection. File edits, dependency installation, preview, upload, deployment, review submission, publication, production configuration changes, CloudBase mutations, and other external writes require the user's explicit authorization for that specific action.
+- Keep reports data-minimized: include only evidence necessary to explain a finding, avoid reproducing private content, and use temporary extraction locations for ZIP inspection. Do not retain an extracted copy after the check when the host provides a safe cleanup mechanism.
+- If the host cannot enforce these boundaries or a requested check would require broader access, mark the check `UNKNOWN` and ask for the minimum additional authorization instead of silently expanding scope.
+
 ## Checkup Workflow
 
 1. Accept the supplied directory or ZIP. Run `scripts/inspect_package.py` first; it safely validates ZIP topology, finds the project root, runs structural and package checks, and produces the initial decision report.
